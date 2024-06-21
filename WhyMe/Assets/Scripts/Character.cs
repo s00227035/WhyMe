@@ -13,13 +13,12 @@ public enum CharacterState
 public class Character : MonoBehaviour
 {
     public CharacterState State;
-    //public Sprite IdleSprite;
-    //public Sprite AttackSprite;
+    public Sprite IdleSprite;
+    public Sprite RunSprite;
     public float movementSpeed = 5;
     protected Rigidbody2D body;
 
     SpriteRenderer spriteRenderer;
-
 
 
     public virtual void Start()
@@ -27,21 +26,21 @@ public class Character : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        //SetState(CharacterState.Idle);
+        SetState(CharacterState.Idle);
     }
 
-    //For later use
-    /*
+    
+    
     public void SetState(CharacterState newState)
     {
         State = newState;///keep track of the new state
         if (State == CharacterState.Idle)
         {
-            spriteRenderer.sprite = IdleSprite;
+            spriteRenderer.sprite  = IdleSprite;
         }
-        else if (State == CharacterState.Attack)
+        else if (State == CharacterState.Run)
         {
-            spriteRenderer.sprite = AttackSprite;
+            spriteRenderer.sprite = RunSprite;
         }
-    }*/
+    }
 }

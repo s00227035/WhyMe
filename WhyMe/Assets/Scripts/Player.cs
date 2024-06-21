@@ -24,6 +24,22 @@ public class Player : Character
         mouseWorldPosition.z = 0;
 
         transform.up = mouseWorldPosition - transform.position;
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            SetState(CharacterState.Run);
+
+            //if (Input.GetButtonDown("Fire1"))
+            //{
+            //    if (Ammo > 1)
+            //        Fire();
+            //}
+        }
+        else
+        {
+            SetState(CharacterState.Idle);
+        }
+
     }
 
     private void FixedUpdate()
