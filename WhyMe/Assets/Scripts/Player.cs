@@ -7,8 +7,8 @@ public class Player : Character
 
     float horizontal, vertical;//input horizontal and vertical
     Vector3 mouseWorldPosition;
-
     public Animator animator;
+
 
     public override void Start()
     {
@@ -16,6 +16,7 @@ public class Player : Character
         base.Start();//call the Start method of Character
     }
 
+    //Setting up animation based on bool
     private void SetAnimation()
     {
         bool isMoving = horizontal != 0 || vertical != 0;
@@ -24,7 +25,7 @@ public class Player : Character
  
 
 
-
+    //Movement + states
     private void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
@@ -38,6 +39,8 @@ public class Player : Character
         if (horizontal != 0 || vertical != 0)
         {
             SetState(CharacterState.Run);
+            //Update sprite direction
+            UpdateSpriteDirection(horizontal, vertical);
         }
         else
         {
@@ -51,5 +54,21 @@ public class Player : Character
     private void FixedUpdate()
     {
         body.MovePosition(transform.position + new Vector3(horizontal, vertical, 0) * movementSpeed * Time.deltaTime);
+    }
+
+    private void UpdateSpriteDirection(float horizontal, float vertical)
+    {
+        //Determine direction based on input
+        Vector3 movementDirection = new Vector3(horizontal, vertical, 0).normalized;
+
+        //Assuming the default direction of the sprite is facing north (up)
+        if (movementDirection != Vector3.zero)
+        {
+            //Determine the angle in degrees to rotate the sprite, adjusting for the north-facing default
+            float angle = Mathf.Atan2(movementDirection.y, movementDirection.x) * Mathf.Rad2Deg -90f;
+
+            //Apply rotation to the sprite
+            transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        }
     }
 }
