@@ -17,6 +17,7 @@ public class Character : MonoBehaviour
     public Sprite RunSprite;
     public float movementSpeed = 5;
     protected Rigidbody2D body;
+    
 
     SpriteRenderer spriteRenderer;
 

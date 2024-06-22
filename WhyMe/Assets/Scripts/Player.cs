@@ -8,12 +8,22 @@ public class Player : Character
     float horizontal, vertical;//input horizontal and vertical
     Vector3 mouseWorldPosition;
 
+    public Animator animator;
+
     public override void Start()
     {
-        
-
+        animator = GetComponent<Animator>();
         base.Start();//call the Start method of Character
     }
+
+    private void SetAnimation()
+    {
+        bool isMoving = horizontal != 0 || vertical != 0;
+        animator.SetBool("IsMoving", isMoving);
+    }
+ 
+
+
 
     private void Update()
     {
@@ -25,20 +35,16 @@ public class Player : Character
 
         transform.up = mouseWorldPosition - transform.position;
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (horizontal != 0 || vertical != 0)
         {
             SetState(CharacterState.Run);
-
-            //if (Input.GetButtonDown("Fire1"))
-            //{
-            //    if (Ammo > 1)
-            //        Fire();
-            //}
         }
         else
         {
             SetState(CharacterState.Idle);
         }
+
+        SetAnimation(); //Set animation based on movement input
 
     }
 

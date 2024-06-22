@@ -194,4 +194,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   State: 0
+  IdleSprite: {fileID: 0}
+  RunSprite: {fileID: 0}
   movementSpeed: 5
