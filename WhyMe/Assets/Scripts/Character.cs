@@ -15,13 +15,11 @@ public class Character : MonoBehaviour
     public CharacterState State;
     public Sprite IdleSprite;
     public Sprite RunSprite;
-    public float movementSpeed = 5;
+    public float movementSpeed = 5;//Player movement speed
     protected Rigidbody2D body;
     public Animator animator;//Used for both enemy and player
 
-
     SpriteRenderer spriteRenderer;
-
 
     public virtual void Start()
     {
@@ -44,5 +42,7 @@ public class Character : MonoBehaviour
         {
             spriteRenderer.sprite = RunSprite;
         }
+
+        
     }
 }
