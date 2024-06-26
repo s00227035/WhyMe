@@ -17,7 +17,8 @@ public class Character : MonoBehaviour
     public Sprite RunSprite;
     public float movementSpeed = 5;
     protected Rigidbody2D body;
-    
+    public Animator animator;//Used for both enemy and player
+
 
     SpriteRenderer spriteRenderer;
 

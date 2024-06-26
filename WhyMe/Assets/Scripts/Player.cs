@@ -7,8 +7,7 @@ public class Player : Character
 
     float horizontal, vertical;//input horizontal and vertical
     Vector3 mouseWorldPosition;
-    public Animator animator;
-
+    
 
     public override void Start()
     {
