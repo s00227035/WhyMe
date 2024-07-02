@@ -210,8 +210,8 @@ MonoBehaviour:
   movementSpeed: 5
   animator: {fileID: 25833938}
   Damage: 10
-  MinMovementSpeed: 3
-  MaxMovementSpeed: 5
+  MinMovementSpeed: 1
+  MaxMovementSpeed: 3
   AttackRange: 3
   FollowRange: 20
   searchDuration: 5

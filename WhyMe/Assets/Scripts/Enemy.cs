@@ -39,7 +39,7 @@ public class Enemy : Character
             Debug.Log("Player within attack range, switching to Idle");
         }
         //Player is seen and then searching is not true
-        else if (distanceToPlayer < FollowRange && CanSeePlayer())
+        else if (distanceToPlayer < FollowRange)
         {
             bool canSeePlayer = CanSeePlayer();
             Debug.Log("Can see player: " + canSeePlayer);
@@ -160,6 +160,13 @@ public class Enemy : Character
         {
             body.MovePosition(transform.position + leftDirection * movementSpeed * Time.deltaTime);
             Debug.Log("Avoiding obstacle by moving left");
+        }
+        else
+        {
+            //No valid direction found, switch to Idle and start searching
+            StartSearching();
+            SetState(CharacterState.Idle);
+            Debug.Log("Obstacle in all directions, switching to search mode");
         }
     }
     private void SetAnimation()
