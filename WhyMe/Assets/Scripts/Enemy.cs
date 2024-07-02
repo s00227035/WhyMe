@@ -18,6 +18,8 @@ public class Enemy : Character
     private bool isSearching;
     private float searchTimer;
 
+    private Vector3 currentDirection;
+
     public override void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -50,6 +52,7 @@ public class Enemy : Character
                 lastKnownPlayerPosition = player.transform.position;
                 isSearching = false;
                 UpdateSpriteDirection(player.transform.position - transform.position);
+                currentDirection = (player.transform.position - transform.position).normalized;
                 Debug.Log("Player within follow range and visible, switching to Run");
             }
             else
@@ -72,6 +75,7 @@ public class Enemy : Character
             {
                 SetState(CharacterState.Run);
                 UpdateSpriteDirection(lastKnownPlayerPosition - transform.position);
+                currentDirection = (lastKnownPlayerPosition - transform.position).normalized;
                 Debug.Log("Searching for player, moving to last known position");
             }
         }
@@ -101,6 +105,7 @@ public class Enemy : Character
 
             if (CanMoveInDirection(direction))
             {
+                currentDirection = direction;
                 body.MovePosition(transform.position + direction * movementSpeed * Time.deltaTime);
                 Debug.Log("Moving in direction: " + direction);
             }
@@ -140,7 +145,6 @@ public class Enemy : Character
     private bool CanMoveInDirection(Vector3 direction)
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 1f);
-        Debug.DrawRay(transform.position, direction, Color.green);
         return hit.collider == null || !hit.collider.CompareTag("Obstacle");
     }
 
@@ -187,6 +191,7 @@ public class Enemy : Character
     {
         isSearching = true;
         searchTimer = searchDuration;
+        lastKnownPlayerPosition = player.transform.position;
         Debug.Log("Player out of sight, starting search mode");
     }
 
