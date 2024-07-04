@@ -43,7 +43,6 @@ public class Enemy : Character
 
         if (distanceToPlayer < AttackRange)
         {
-            // Attack logic can be added here - for later use
             SetState(CharacterState.Idle);
             Debug.Log("Player within attack range, switching to Idle");
         }
@@ -84,15 +83,7 @@ public class Enemy : Character
     {
         if (State == CharacterState.Run)
         {
-            Vector3 direction;
-            if (isSearching)
-            {
-                direction = (lastKnownPlayerPosition - transform.position).normalized;
-            }
-            else
-            {
-                direction = currentDirection;
-            }
+            Vector3 direction = isSearching ? (lastKnownPlayerPosition - transform.position).normalized : currentDirection;
 
             if (CanMoveInDirection(direction))
             {
@@ -106,7 +97,6 @@ public class Enemy : Character
             }
         }
 
-        // Handle wandering logic separately within FixedUpdate to ensure it moves consistently
         if (State == CharacterState.Run && !isSearching)
         {
             wanderTimerCurrent -= Time.deltaTime;
@@ -145,25 +135,33 @@ public class Enemy : Character
 
     private void AvoidObstacle()
     {
-        Vector3 rightDirection = Quaternion.Euler(0, 0, 90) * transform.up;
-        Vector3 leftDirection = Quaternion.Euler(0, 0, -90) * transform.up;
+        Vector3[] directions = {
+            transform.up,
+            Quaternion.Euler(0, 0, 45) * transform.up,
+            Quaternion.Euler(0, 0, -45) * transform.up,
+            Quaternion.Euler(0, 0, 90) * transform.up,
+            Quaternion.Euler(0, 0, -90) * transform.up,
+            Quaternion.Euler(0, 0, 135) * transform.up,
+            Quaternion.Euler(0, 0, -135) * transform.up,
+            -transform.up
+        };
 
-        if (CanMoveInDirection(rightDirection))
+        foreach (Vector3 dir in directions)
         {
-            body.MovePosition(transform.position + rightDirection * movementSpeed * Time.deltaTime);
-            Debug.Log("Avoiding obstacle by moving right");
+            if (CanMoveInDirection(dir))
+            {
+                body.MovePosition(transform.position + dir * movementSpeed * Time.deltaTime);
+                UpdateSpriteDirection(dir);
+                currentDirection = dir.normalized;
+                Debug.Log("Avoiding obstacle by moving in direction: " + dir);
+                return;
+            }
         }
-        else if (CanMoveInDirection(leftDirection))
-        {
-            body.MovePosition(transform.position + leftDirection * movementSpeed * Time.deltaTime);
-            Debug.Log("Avoiding obstacle by moving left");
-        }
-        else
-        {
-            StartSearching();
-            SetState(CharacterState.Idle);
-            Debug.Log("Obstacle in all directions, switching to search mode");
-        }
+
+        // If no valid direction is found, start searching
+        StartSearching();
+        SetState(CharacterState.Idle);
+        Debug.Log("Obstacle in all directions, switching to search mode");
     }
 
     private void SetAnimation()
@@ -173,7 +171,6 @@ public class Enemy : Character
 
     private void UpdateSpriteDirection(Vector3 direction)
     {
-        // Rotate the sprite to face the correct direction
         if (direction != Vector3.zero)
         {
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
