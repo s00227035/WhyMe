@@ -8,15 +8,18 @@ public class Enemy : Character
     public float MinMovementSpeed = 1f;
     public float MaxMovementSpeed = 3f;
 
-    public float AttackRange = 3f;//Attack range
-    public float FollowRange = 20f;//Follow range
-    public float searchDuration = 5f;//duration for searching of the player
-    GameObject player;
+    public float AttackRange = 3f; // Attack range
+    public float FollowRange = 20f; // Follow range
+    public float searchDuration = 5f; // Duration for searching for the player
+    public float wanderRadius = 10f; // Radius for wandering area
+    public float wanderTimer = 10f; // Time to wander before searching again
 
+    GameObject player;
 
     private Vector3 lastKnownPlayerPosition;
     private bool isSearching;
     private float searchTimer;
+    private float wanderTimerCurrent;
 
     private Vector3 currentDirection;
 
@@ -27,6 +30,10 @@ public class Enemy : Character
         animator = GetComponent<Animator>();
 
         base.Start();
+
+        searchTimer = searchDuration;
+        wanderTimerCurrent = wanderTimer;
+        StartWandering();
     }
 
     private void Update()
@@ -36,54 +43,38 @@ public class Enemy : Character
 
         if (distanceToPlayer < AttackRange)
         {
-            //Attack logic can be added here - for later use
+            // Attack logic can be added here - for later use
             SetState(CharacterState.Idle);
             Debug.Log("Player within attack range, switching to Idle");
         }
-        //Player is seen and then searching is not true
-        else if (distanceToPlayer < FollowRange)
+        else if (distanceToPlayer < FollowRange && CanSeePlayer())
         {
-            bool canSeePlayer = CanSeePlayer();
-            Debug.Log("Can see player: " + canSeePlayer);
-
-            if (canSeePlayer)
-            {
-                SetState(CharacterState.Run);
-                lastKnownPlayerPosition = player.transform.position;
-                isSearching = false;
-                UpdateSpriteDirection(player.transform.position - transform.position);
-                currentDirection = (player.transform.position - transform.position).normalized;
-                Debug.Log("Player within follow range and visible, switching to Run");
-            }
-            else
-            {
-                StartSearching();
-                Debug.Log("Player within follow range but not visible, starting search mode");
-            }
+            SetState(CharacterState.Run);
+            lastKnownPlayerPosition = player.transform.position;
+            isSearching = false;
+            currentDirection = (player.transform.position - transform.position).normalized;
+            UpdateSpriteDirection(currentDirection);
+            Debug.Log("Player within follow range and visible, switching to Run");
         }
-        //Player is not seen and then searching is true
         else if (isSearching)
         {
             searchTimer -= Time.deltaTime;
             if (searchTimer <= 0)
             {
-                SetState(CharacterState.Idle);
-                isSearching = false;
-                Debug.Log("Search timer expired, switching to Idle");
+                StartWandering();
+                Debug.Log("Search timer expired, switching to Wander");
             }
             else
             {
                 SetState(CharacterState.Run);
-                UpdateSpriteDirection(lastKnownPlayerPosition - transform.position);
                 currentDirection = (lastKnownPlayerPosition - transform.position).normalized;
+                UpdateSpriteDirection(currentDirection);
                 Debug.Log("Searching for player, moving to last known position");
             }
         }
-        //Else animation Idle
         else
         {
-            SetState(CharacterState.Idle);
-            Debug.Log("Player not in follow range, switching to Idle");
+            Wander();
         }
 
         SetAnimation();
@@ -100,28 +91,33 @@ public class Enemy : Character
             }
             else
             {
-                direction = (player.transform.position - transform.position).normalized;
+                direction = currentDirection;
             }
 
             if (CanMoveInDirection(direction))
             {
-                currentDirection = direction;
                 body.MovePosition(transform.position + direction * movementSpeed * Time.deltaTime);
                 Debug.Log("Moving in direction: " + direction);
             }
             else
             {
-                //Handle obstacle avoidance here
                 AvoidObstacle();
                 Debug.Log("Obstacle detected, avoiding");
             }
         }
+
+        // Handle wandering logic separately within FixedUpdate to ensure it moves consistently
+        if (State == CharacterState.Run && !isSearching)
+        {
+            wanderTimerCurrent -= Time.deltaTime;
+            if (wanderTimerCurrent <= 0)
+            {
+                StartWandering();
+                Debug.Log("Wander timer expired, choosing new direction");
+            }
+        }
     }
 
-    
-
-
-    //BOOL - CAN SEE PLAYER
     private bool CanSeePlayer()
     {
         Vector3 directionToPlayer = player.transform.position - transform.position;
@@ -141,17 +137,14 @@ public class Enemy : Character
         return false;
     }
 
-    //BOOL - CAN MOVE IN DIRECTION
     private bool CanMoveInDirection(Vector3 direction)
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 1f);
         return hit.collider == null || !hit.collider.CompareTag("Obstacle");
     }
 
-    //DETECT OBSTACLE AND AVOID IT
     private void AvoidObstacle()
     {
-        //Basic obstacle avoidance by trying to move in a specific direction
         Vector3 rightDirection = Quaternion.Euler(0, 0, 90) * transform.up;
         Vector3 leftDirection = Quaternion.Euler(0, 0, -90) * transform.up;
 
@@ -167,12 +160,12 @@ public class Enemy : Character
         }
         else
         {
-            //No valid direction found, switch to Idle and start searching
             StartSearching();
             SetState(CharacterState.Idle);
             Debug.Log("Obstacle in all directions, switching to search mode");
         }
     }
+
     private void SetAnimation()
     {
         animator.SetBool("IsMoving", State == CharacterState.Run);
@@ -180,6 +173,7 @@ public class Enemy : Character
 
     private void UpdateSpriteDirection(Vector3 direction)
     {
+        // Rotate the sprite to face the correct direction
         if (direction != Vector3.zero)
         {
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
@@ -195,32 +189,58 @@ public class Enemy : Character
         Debug.Log("Player out of sight, starting search mode");
     }
 
-    //GIZMOS FOR DEBUGGING
+    private void StartWandering()
+    {
+        isSearching = false;
+        wanderTimerCurrent = wanderTimer;
+
+        Vector2 randomDirection = Random.insideUnitCircle.normalized * wanderRadius;
+        lastKnownPlayerPosition = transform.position + (Vector3)randomDirection;
+
+        SetState(CharacterState.Run);
+        currentDirection = (lastKnownPlayerPosition - transform.position).normalized;
+        UpdateSpriteDirection(currentDirection);
+        Debug.Log("Started wandering, new direction: " + currentDirection);
+    }
+
+    private void Wander()
+    {
+        if (CanMoveInDirection(currentDirection))
+        {
+            body.MovePosition(transform.position + currentDirection * movementSpeed * Time.deltaTime);
+            UpdateSpriteDirection(currentDirection);
+            Debug.Log("Wandering in direction: " + currentDirection);
+        }
+        else
+        {
+            AvoidObstacle();
+            Debug.Log("Wandering encountered obstacle, avoiding");
+        }
+    }
+
     private void OnDrawGizmos()
     {
-        // Draw attack range
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, AttackRange);
 
-        // Draw follow range
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, FollowRange);
 
-        // Draw direction ray
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, wanderRadius);
+
         if (player != null)
         {
             Gizmos.color = CanSeePlayer() ? Color.blue : Color.yellow;
             Gizmos.DrawLine(transform.position, player.transform.position);
         }
 
-        // Draw search direction ray
         if (isSearching)
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawLine(transform.position, lastKnownPlayerPosition);
         }
 
-        // Draw obstacle avoidance rays
         Vector3 forwardDirection = transform.up;
         Vector3 rightDirection = Quaternion.Euler(0, 0, 90) * transform.up;
         Vector3 leftDirection = Quaternion.Euler(0, 0, -90) * transform.up;
