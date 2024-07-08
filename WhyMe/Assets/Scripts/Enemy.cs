@@ -4,14 +4,16 @@ using UnityEngine;
 public class Enemy : Character
 {
     public int Damage = 40;
-    public float MinMovementSpeed = 1f;
-    public float MaxMovementSpeed = 3f;
+    public float normalMovementSpeed = 5f;
+    public float sprintMovementSpeed = 6.5f;
+    public float slowedMovementSpeed = 2f;
     public float AttackRange = 3f;
     public float FollowRange = 20f;
     public float searchDuration = 5f;
     public float wanderRadius = 10f;
     public float wanderTimer = 10f;
-    public float attackCooldown = 2f; // Cooldown between attacks
+    public float attackCooldown = 3f; // Cooldown between attacks
+    public float slowedCooldown = 7f; // Time to remain slowed after attack
 
     private GameObject player;
     private Vector3 lastKnownPlayerPosition;
@@ -19,12 +21,12 @@ public class Enemy : Character
     private float searchTimer;
     private float wanderTimerCurrent;
     private float attackTimer; // Timer for attack cooldown
+    public float slowedTimer; // Timer for slowed state
     private Vector3 currentDirection;
 
     public override void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        movementSpeed = Random.Range(MinMovementSpeed, MaxMovementSpeed);
         animator = GetComponent<Animator>();
 
         base.Start();
@@ -32,6 +34,7 @@ public class Enemy : Character
         searchTimer = searchDuration;
         wanderTimerCurrent = wanderTimer;
         attackTimer = attackCooldown; // Initialize the attack timer
+        slowedTimer = 0f; // Start with no slowdown
     }
 
     private void Update()
@@ -45,6 +48,7 @@ public class Enemy : Character
             {
                 AttackPlayer();
                 attackTimer = attackCooldown; // Reset the attack timer
+                slowedTimer = slowedCooldown; // Start slowed timer after attack
                 Debug.Log("Attacking player, resetting attack timer");
             }
             else
@@ -66,10 +70,21 @@ public class Enemy : Character
                 isSearching = false;
                 UpdateSpriteDirection(player.transform.position - transform.position);
                 currentDirection = (player.transform.position - transform.position).normalized;
+                // Determine movement speed based on slowed state
+                if (slowedTimer > 0f)
+                {
+                    movementSpeed = slowedMovementSpeed;
+                }
+                else
+                {
+                    movementSpeed = sprintMovementSpeed;
+                }
+
                 Debug.Log("Player within follow range and visible, switching to Run");
             }
             else
             {
+                SetState(CharacterState.Run);
                 StartSearching();
                 Debug.Log("Player within follow range but not visible, starting search mode");
             }
@@ -94,6 +109,7 @@ public class Enemy : Character
         else
         {
             SetState(CharacterState.Idle);
+            movementSpeed = normalMovementSpeed;
             Debug.Log("Player not in follow range, switching to Idle");
         }
 
@@ -137,8 +153,21 @@ public class Enemy : Character
                 Debug.Log("Wander timer expired, switching to Searching");
             }
         }
+
+        // Update slowed timer
+        if (slowedTimer > 0f)
+        {
+            slowedTimer -= Time.deltaTime;
+            if (slowedTimer <= 0f)
+            {
+                // If slowed timer ends, reset to normal speed
+                movementSpeed = sprintMovementSpeed;
+                Debug.Log("Slowed state ended, returning to normal speed");
+            }
+        }
     }
 
+    //Can see player
     private bool CanSeePlayer()
     {
         Vector3 directionToPlayer = player.transform.position - transform.position;
@@ -164,6 +193,7 @@ public class Enemy : Character
         return hit.collider == null || !hit.collider.CompareTag("Obstacle");
     }
 
+    // Avoid obstacles
     private void AvoidObstacle()
     {
         Vector3 rightDirection = Quaternion.Euler(0, 0, 90) * transform.up;
@@ -200,7 +230,7 @@ public class Enemy : Character
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
     }
-
+    // Search
     private void StartSearching()
     {
         isSearching = true;
@@ -219,7 +249,7 @@ public class Enemy : Character
 
         SetState(CharacterState.Run);
     }
-
+    // Wander
     private void Wander()
     {
         Vector3 direction = (lastKnownPlayerPosition - transform.position).normalized;
@@ -234,6 +264,7 @@ public class Enemy : Character
         }
     }
 
+    // Attack player
     private void AttackPlayer()
     {
         PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
@@ -241,6 +272,7 @@ public class Enemy : Character
         {
             playerHealth.TakeDamage(Damage);
         }
+        slowedTimer = slowedCooldown; // Reset the slowed timer after every attack
     }
 
     private void OnDrawGizmos()

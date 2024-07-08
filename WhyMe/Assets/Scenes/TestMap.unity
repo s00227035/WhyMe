@@ -207,17 +207,20 @@ MonoBehaviour:
   State: 0
   IdleSprite: {fileID: 21300000, guid: e4eb2707308063844bca97082fbacf59, type: 3}
   RunSprite: {fileID: 21300000, guid: 40eca962882752644ae69621ca0deafa, type: 3}
-  movementSpeed: 5
+  movementSpeed: 0
   animator: {fileID: 25833938}
   Damage: 40
-  MinMovementSpeed: 1
-  MaxMovementSpeed: 5
+  normalMovementSpeed: 5
+  sprintMovementSpeed: 6.5
+  slowedMovementSpeed: 2
   AttackRange: 5
   FollowRange: 15
   searchDuration: 5
   wanderRadius: 10
   wanderTimer: 10
-  attackCooldown: 2
+  attackCooldown: 3
+  slowedCooldown: 7
+  slowedTimer: 0
 --- !u!212 &25833941
 SpriteRenderer:
   m_ObjectHideFlags: 0
