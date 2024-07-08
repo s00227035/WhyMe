@@ -9,7 +9,7 @@ public class PlayerHealth : MonoBehaviour
 
     public Image foregroundImage; // Assign this in the Unity Editor
     public int regenAmount = 10; // Amount of health to regenerate each tick
-    public float regenTickTime = 2f; // Time between each regeneration tick
+    public float regenTickTime = 4f; // Time between each regeneration tick
 
     private Coroutine regenCoroutine;
 

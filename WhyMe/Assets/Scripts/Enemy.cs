@@ -1,26 +1,24 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : Character
 {
-    public int Damage = 10;
+    public int Damage = 40;
     public float MinMovementSpeed = 1f;
     public float MaxMovementSpeed = 3f;
+    public float AttackRange = 3f;
+    public float FollowRange = 20f;
+    public float searchDuration = 5f;
+    public float wanderRadius = 10f;
+    public float wanderTimer = 10f;
+    public float attackCooldown = 2f; // Cooldown between attacks
 
-    public float AttackRange = 5f; // Attack range
-    public float FollowRange = 20f; // Follow range
-    public float searchDuration = 5f; // Duration for searching for the player
-    public float wanderRadius = 10f; // Radius for wandering area
-    public float wanderTimer = 10f; // Time to wander before searching again
-
-    GameObject player;
-
+    private GameObject player;
     private Vector3 lastKnownPlayerPosition;
     private bool isSearching;
     private float searchTimer;
     private float wanderTimerCurrent;
-
+    private float attackTimer; // Timer for attack cooldown
     private Vector3 currentDirection;
 
     public override void Start()
@@ -33,48 +31,70 @@ public class Enemy : Character
 
         searchTimer = searchDuration;
         wanderTimerCurrent = wanderTimer;
-        StartWandering();
+        attackTimer = attackCooldown; // Initialize the attack timer
     }
 
     private void Update()
     {
         float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
-        //Debug.Log("Distance to player: " + distanceToPlayer);
+        Debug.Log("Distance to player: " + distanceToPlayer);
 
         if (distanceToPlayer < AttackRange)
         {
-            AttackPlayer();
+            if (attackTimer <= 0f)
+            {
+                AttackPlayer();
+                attackTimer = attackCooldown; // Reset the attack timer
+                Debug.Log("Attacking player, resetting attack timer");
+            }
+            else
+            {
+                attackTimer -= Time.deltaTime; // Count down the attack timer
+                Debug.Log("Attack timer: " + attackTimer);
+            }
             SetState(CharacterState.Idle);
-            //Debug.Log("Player within attack range, switching to Idle");
         }
-        else if (distanceToPlayer < FollowRange && CanSeePlayer())
+        else if (distanceToPlayer < FollowRange)
         {
-            SetState(CharacterState.Run);
-            lastKnownPlayerPosition = player.transform.position;
-            isSearching = false;
-            currentDirection = (player.transform.position - transform.position).normalized;
-            UpdateSpriteDirection(currentDirection);
-            //Debug.Log("Player within follow range and visible, switching to Run");
+            bool canSeePlayer = CanSeePlayer();
+            Debug.Log("Can see player: " + canSeePlayer);
+
+            if (canSeePlayer)
+            {
+                SetState(CharacterState.Run);
+                lastKnownPlayerPosition = player.transform.position;
+                isSearching = false;
+                UpdateSpriteDirection(player.transform.position - transform.position);
+                currentDirection = (player.transform.position - transform.position).normalized;
+                Debug.Log("Player within follow range and visible, switching to Run");
+            }
+            else
+            {
+                StartSearching();
+                Debug.Log("Player within follow range but not visible, starting search mode");
+            }
         }
         else if (isSearching)
         {
             searchTimer -= Time.deltaTime;
             if (searchTimer <= 0)
             {
+                SetState(CharacterState.Idle);
                 StartWandering();
-                //Debug.Log("Search timer expired, switching to Wander");
+                Debug.Log("Search timer expired, switching to Idle");
             }
             else
             {
                 SetState(CharacterState.Run);
+                UpdateSpriteDirection(lastKnownPlayerPosition - transform.position);
                 currentDirection = (lastKnownPlayerPosition - transform.position).normalized;
-                UpdateSpriteDirection(currentDirection);
-                //Debug.Log("Searching for player, moving to last known position");
+                Debug.Log("Searching for player, moving to last known position");
             }
         }
         else
         {
-            Wander();
+            SetState(CharacterState.Idle);
+            Debug.Log("Player not in follow range, switching to Idle");
         }
 
         SetAnimation();
@@ -84,27 +104,37 @@ public class Enemy : Character
     {
         if (State == CharacterState.Run)
         {
-            Vector3 direction = isSearching ? (lastKnownPlayerPosition - transform.position).normalized : currentDirection;
+            Vector3 direction;
+            if (isSearching)
+            {
+                direction = (lastKnownPlayerPosition - transform.position).normalized;
+            }
+            else
+            {
+                direction = (player.transform.position - transform.position).normalized;
+            }
 
             if (CanMoveInDirection(direction))
             {
+                currentDirection = direction;
                 body.MovePosition(transform.position + direction * movementSpeed * Time.deltaTime);
-                //Debug.Log("Moving in direction: " + direction);
+                Debug.Log("Moving in direction: " + direction);
             }
             else
             {
                 AvoidObstacle();
-                //Debug.Log("Obstacle detected, avoiding");
+                Debug.Log("Obstacle detected, avoiding");
             }
         }
-
-        if (State == CharacterState.Run && !isSearching)
+        else if (State == CharacterState.Idle)
         {
+            Wander();
+
             wanderTimerCurrent -= Time.deltaTime;
             if (wanderTimerCurrent <= 0)
             {
-                StartWandering();
-                //Debug.Log("Wander timer expired, choosing new direction");
+                StartSearching();
+                Debug.Log("Wander timer expired, switching to Searching");
             }
         }
     }
@@ -113,7 +143,7 @@ public class Enemy : Character
     {
         Vector3 directionToPlayer = player.transform.position - transform.position;
         int enemyLayer = LayerMask.NameToLayer("Enemy");
-        int layerMask = ~LayerMask.GetMask(LayerMask.LayerToName(enemyLayer)); // Exclude "Enemy" layer
+        int layerMask = ~LayerMask.GetMask(LayerMask.LayerToName(enemyLayer));
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, FollowRange, layerMask);
 
@@ -121,7 +151,7 @@ public class Enemy : Character
 
         if (hit.collider != null)
         {
-            //Debug.Log("Raycast hit: " + hit.collider.gameObject.name);
+            Debug.Log("Raycast hit: " + hit.collider.gameObject.name);
             return hit.collider.gameObject == player;
         }
 
@@ -136,33 +166,25 @@ public class Enemy : Character
 
     private void AvoidObstacle()
     {
-        Vector3[] directions = {
-            transform.up,
-            Quaternion.Euler(0, 0, 45) * transform.up,
-            Quaternion.Euler(0, 0, -45) * transform.up,
-            Quaternion.Euler(0, 0, 90) * transform.up,
-            Quaternion.Euler(0, 0, -90) * transform.up,
-            Quaternion.Euler(0, 0, 135) * transform.up,
-            Quaternion.Euler(0, 0, -135) * transform.up,
-            -transform.up
-        };
+        Vector3 rightDirection = Quaternion.Euler(0, 0, 90) * transform.up;
+        Vector3 leftDirection = Quaternion.Euler(0, 0, -90) * transform.up;
 
-        foreach (Vector3 dir in directions)
+        if (CanMoveInDirection(rightDirection))
         {
-            if (CanMoveInDirection(dir))
-            {
-                body.MovePosition(transform.position + dir * movementSpeed * Time.deltaTime);
-                UpdateSpriteDirection(dir);
-                currentDirection = dir.normalized;
-                //Debug.Log("Avoiding obstacle by moving in direction: " + dir);
-                return;
-            }
+            body.MovePosition(transform.position + rightDirection * movementSpeed * Time.deltaTime);
+            Debug.Log("Avoiding obstacle by moving right");
         }
-
-        // If no valid direction is found, start searching
-        StartSearching();
-        SetState(CharacterState.Idle);
-        //Debug.Log("Obstacle in all directions, switching to search mode");
+        else if (CanMoveInDirection(leftDirection))
+        {
+            body.MovePosition(transform.position + leftDirection * movementSpeed * Time.deltaTime);
+            Debug.Log("Avoiding obstacle by moving left");
+        }
+        else
+        {
+            StartSearching();
+            SetState(CharacterState.Idle);
+            Debug.Log("Obstacle in all directions, switching to search mode");
+        }
     }
 
     private void SetAnimation()
@@ -179,13 +201,12 @@ public class Enemy : Character
         }
     }
 
-    //Searching
     private void StartSearching()
     {
         isSearching = true;
         searchTimer = searchDuration;
         lastKnownPlayerPosition = player.transform.position;
-        //Debug.Log("Player out of sight, starting search mode");
+        Debug.Log("Player out of sight, starting search mode");
     }
 
     private void StartWandering()
@@ -197,28 +218,22 @@ public class Enemy : Character
         lastKnownPlayerPosition = transform.position + (Vector3)randomDirection;
 
         SetState(CharacterState.Run);
-        currentDirection = (lastKnownPlayerPosition - transform.position).normalized;
-        UpdateSpriteDirection(currentDirection);
-        //Debug.Log("Started wandering, new direction: " + currentDirection);
     }
 
-    //Wander
     private void Wander()
     {
-        if (CanMoveInDirection(currentDirection))
+        Vector3 direction = (lastKnownPlayerPosition - transform.position).normalized;
+        if (CanMoveInDirection(direction))
         {
-            body.MovePosition(transform.position + currentDirection * movementSpeed * Time.deltaTime);
-            UpdateSpriteDirection(currentDirection);
-            //Debug.Log("Wandering in direction: " + currentDirection);
+            currentDirection = direction;
+            body.MovePosition(transform.position + direction * movementSpeed * Time.deltaTime);
         }
         else
         {
             AvoidObstacle();
-            //Debug.Log("Wandering encountered obstacle, avoiding");
         }
     }
 
-    //Attack player
     private void AttackPlayer()
     {
         PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
@@ -227,7 +242,6 @@ public class Enemy : Character
             playerHealth.TakeDamage(Damage);
         }
     }
-
 
     private void OnDrawGizmos()
     {
