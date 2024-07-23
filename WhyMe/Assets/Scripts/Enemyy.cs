@@ -56,7 +56,7 @@ public class Enemyy : Character
                 aiPath.maxSpeed = slowedMovementSpeed; // Set the AIPath speed to slowed speed
                 slowedTimer -= Time.deltaTime; // Decrement slowed timer
             }
-            else if (distanceToPlayer > 5f)
+            else if (distanceToPlayer > 7f)
             {
                 aiPath.maxSpeed = movementSpeed;
             }
