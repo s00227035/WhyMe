@@ -2782,6 +2782,14 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1647336224}
+    - target: {fileID: 3830632213458025091, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
+      propertyPath: movementSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3830632213458025091, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
+      propertyPath: sprintMovementSpeed
+      value: 8.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2795,6 +2803,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1880892111915304544, guid: 9ac850cf9ea101248a3dcb878a2716c8, type: 3}
+      propertyPath: movementSpeed
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2551505129389311774, guid: 9ac850cf9ea101248a3dcb878a2716c8, type: 3}
       propertyPath: m_Name
       value: Player

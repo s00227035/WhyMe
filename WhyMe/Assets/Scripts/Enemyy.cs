@@ -8,7 +8,7 @@ public class Enemyy : Character
     public AIPath aiPath; // Reference to the AIPath component
     public int damage = 40;
     public float attackRange = 3.8f;
-    public float sprintMovementSpeed = 6.5f; // sprint speed
+    public float sprintMovementSpeed = 8.5f; // sprint speed
     public float slowedMovementSpeed = 2f; // slowed speed
     public float attackCooldown = 3f; // Cooldown between attacks
     public float slowedCooldown = 7f; // Time to remain slowed after attack
@@ -56,12 +56,16 @@ public class Enemyy : Character
                 aiPath.maxSpeed = slowedMovementSpeed; // Set the AIPath speed to slowed speed
                 slowedTimer -= Time.deltaTime; // Decrement slowed timer
             }
+            else if (distanceToPlayer > 5f)
+            {
+                aiPath.maxSpeed = movementSpeed;
+            }
             else
             {
                 aiPath.maxSpeed = sprintMovementSpeed; // Set the AIPath speed to sprint speed
             }
         }
-        Debug.Log("Distance to player: " + distanceToPlayer);
+        Debug.Log("distance to player: " + distanceToPlayer);
         SetAnimation();
     }
 
