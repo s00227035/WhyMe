@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4496250191025884085}
   - component: {fileID: 452985041721343673}
   - component: {fileID: 4986874277300217931}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: fridge
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
