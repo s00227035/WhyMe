@@ -41,10 +41,13 @@ public class DraggableBox : MonoBehaviour
    
     private void Update()
     {
-        //If the box is dragged, follow the player's position
+        //If the box is dragged and the player is moving, follow the player's position
         if (isBeingDragged && player != null)
         {
-            FollowPlayer();
+            if (player.IsMoving) //Check if the player is moving
+            {
+                FollowPlayer();
+            }
         }
     }
 

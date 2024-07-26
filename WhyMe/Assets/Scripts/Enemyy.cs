@@ -7,11 +7,12 @@ public class Enemyy : Character
 {
     public AIPath aiPath; // Reference to the AIPath component
     public int damage = 40;
-    public float attackRange = 3.8f;
-    public float sprintMovementSpeed = 8.5f; // sprint speed
+    public float attackRange = 5f;
+    public float sprintMovementSpeed = 10f; // sprint speed
     public float slowedMovementSpeed = 2f; // slowed speed
-    public float attackCooldown = 3f; // Cooldown between attacks
+    public float attackCooldown = 2f; // Cooldown between attacks
     public float slowedCooldown = 7f; // Time to remain slowed after attack
+    
 
     private GameObject player;
     private float attackTimer; // Timer for attack cooldown
@@ -66,6 +67,9 @@ public class Enemyy : Character
             }
         }
         //Debug.Log("distance to player: " + distanceToPlayer);
+
+        
+
         SetAnimation();
     }
 

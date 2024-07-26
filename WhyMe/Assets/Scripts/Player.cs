@@ -9,7 +9,7 @@ public class Player : Character
     Vector3 mouseWorldPosition;
     private DraggableBox draggableBox = null;//Reference to the draggable box
     private const float interactionRange = 2f;//interaction range for grabbing boxes
-    
+    public bool IsMoving {  get; private set; }
 
     public override void Start()
     {
@@ -22,6 +22,7 @@ public class Player : Character
     {
         bool isMoving = horizontal != 0 || vertical != 0;
         animator.SetBool("IsMoving", isMoving);
+        IsMoving = isMoving;//Set the movement state
     }
  
 

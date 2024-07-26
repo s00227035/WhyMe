@@ -37599,7 +37599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2110804195533887441, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.8
+      value: 15.24
       objectReference: {fileID: 0}
     - target: {fileID: 2110804195533887441, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -37638,16 +37638,28 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1647336224}
     - target: {fileID: 3830632213458025091, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
+      propertyPath: attackRange
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3830632213458025091, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
       propertyPath: movementSpeed
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3830632213458025091, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
+      propertyPath: attackCooldown
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3830632213458025091, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
       propertyPath: sprintMovementSpeed
-      value: 8.5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4357098311579009172, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
       propertyPath: m_Constraints
-      value: 0
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8337707309367239375, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
+      propertyPath: radius
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
