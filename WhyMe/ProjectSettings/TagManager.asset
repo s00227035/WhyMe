@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Obstacle
+  - Box
   layers:
   - Default
   - TransparentFX
