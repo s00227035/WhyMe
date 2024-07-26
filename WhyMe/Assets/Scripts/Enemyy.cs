@@ -65,7 +65,7 @@ public class Enemyy : Character
                 aiPath.maxSpeed = sprintMovementSpeed; // Set the AIPath speed to sprint speed
             }
         }
-        Debug.Log("distance to player: " + distanceToPlayer);
+        //Debug.Log("distance to player: " + distanceToPlayer);
         SetAnimation();
     }
 

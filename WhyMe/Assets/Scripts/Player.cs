@@ -5,8 +5,10 @@ using UnityEngine;
 public class Player : Character
 {
 
-    float horizontal, vertical;//input horizontal and vertical
+    private float horizontal, vertical;//input horizontal and vertical
     Vector3 mouseWorldPosition;
+    private DraggableBox draggableBox = null;//Reference to the draggable box
+    private const float interactionRange = 2f;//interaction range for grabbing boxes
     
 
     public override void Start()
@@ -47,6 +49,7 @@ public class Player : Character
         }
 
         SetAnimation(); //Set animation based on movement input
+        HandleBoxInteraction();//Check for box interactions
 
     }
 
@@ -70,4 +73,52 @@ public class Player : Character
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
     }
+
+    //Handle interaction with boxes
+    private void HandleBoxInteraction()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (draggableBox == null)
+            {
+                TryGrabBox();
+            }
+            else
+            {
+                //Release the current box
+                Debug.Log("RELEASING BOX.");
+                draggableBox.ReleaseBox();
+                draggableBox = null;
+            }
+        }
+    }
+
+    //Attempt to grab a box
+    private void TryGrabBox()
+    {
+        //Check for boxes within range
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, interactionRange);
+
+        Debug.Log($"Checking for boxes within range {interactionRange}..."); // Log range check
+
+        foreach (Collider2D collider in colliders)
+        {
+            DraggableBox box = collider.GetComponent<DraggableBox>();
+            if (box != null)
+            {
+                Debug.Log("BOX FOUND! ATTEMPTING TO GRAB...");
+                draggableBox = box;
+                draggableBox.GrabBox(this);
+                break;
+            }
+        }
+    }
+
+    //Visualize the range for interaction
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, interactionRange);//Range
+    }
+
 }
