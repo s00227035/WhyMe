@@ -122,7 +122,7 @@ public class Player : Character
 
         if (closetBox != null)
         {
-            Debug.Log("BOX FOUND! ATTEMPTING TO GRAB..");
+            //Debug.Log("BOX FOUND! ATTEMPTING TO GRAB..");
             draggableBox = closetBox;
             draggableBox.GrabBox(this);
         }

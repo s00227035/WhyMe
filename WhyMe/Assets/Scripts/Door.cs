@@ -6,9 +6,11 @@ public class Door : MonoBehaviour
 {
     public BoxTargetArea[] targetAreas; //Array of target areas
 
+    private bool isOpen = false; //Keep track of whether the door is already open
+
     private void Update()
     {
-        if (AreAllBoxesPlaced())
+        if (!isOpen && AreAllBoxesPlaced())
         {
             OpenDoor();
         }
@@ -21,6 +23,7 @@ public class Door : MonoBehaviour
         {
             if (!area.isOccupied)
             {
+                //Debug.Log($"TARGET AREA {area.gameObject.name} IS NOT OCCUPIED");
                 return false; //Return not true if any area is not occupied
             }
         }
@@ -31,6 +34,7 @@ public class Door : MonoBehaviour
     private void OpenDoor()
     {
         Debug.Log("DOOR OPENED!");
+        isOpen = true;
         Destroy(gameObject); //Destroy the door
     }
 }
