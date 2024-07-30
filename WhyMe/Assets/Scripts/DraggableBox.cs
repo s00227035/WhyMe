@@ -8,6 +8,8 @@ public class DraggableBox : MonoBehaviour
     private Player player; //Reference to player for dragging
     private Rigidbody2D rigidBody;//Component for physics interactions
 
+    private bool isLocked = false;//Whether the box is locked in place
+
     private void Start()
     {
         //Get the Rigidbody2D component attached to the box
@@ -25,7 +27,7 @@ public class DraggableBox : MonoBehaviour
     {
         if (!isBeingDragged)
         {
-            Debug.Log("BOX GRABBED!");
+            //Debug.Log("BOX GRABBED!");
             isBeingDragged = true;
             this.player = player; //Set the player reference
         }
@@ -34,7 +36,7 @@ public class DraggableBox : MonoBehaviour
     //Method for the Player when they release the box
     public void ReleaseBox()
     {
-        Debug.Log("BOX RELEASED");
+        //Debug.Log("BOX RELEASED");
         isBeingDragged= false;
         player = null; //Clear the player reference
     }
@@ -51,6 +53,7 @@ public class DraggableBox : MonoBehaviour
         }
     }
 
+    //Lock the box in place
     private void FollowPlayer()
     {
         //Calculate the new position of the box relative to the player
@@ -59,5 +62,11 @@ public class DraggableBox : MonoBehaviour
         
         //Smoother box position towards the target position
         rigidBody.MovePosition(Vector3.Lerp(transform.position, targetPosition, 10f * Time.deltaTime));
+    }
+
+    public void LockPosition(Vector3 position)
+    {
+        isLocked = true;
+        rigidBody.MovePosition(position);
     }
 }
