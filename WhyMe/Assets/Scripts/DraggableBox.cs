@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DraggableBox : MonoBehaviour
 {
-    private bool isBeingDragged = false;
+    public bool isBeingDragged = false;
     private Player player; //Reference to player for dragging
     private Rigidbody2D rigidBody;//Component for physics interactions
 

@@ -102,16 +102,29 @@ public class Player : Character
 
         Debug.Log($"Checking for boxes within range {interactionRange}..."); // Log range check
 
+        DraggableBox closetBox = null;
+        float closestDistance = float.MaxValue;
+
         foreach (Collider2D collider in colliders)
         {
             DraggableBox box = collider.GetComponent<DraggableBox>();
-            if (box != null)
+            if (box != null && !box.isBeingDragged)
             {
-                Debug.Log("BOX FOUND! ATTEMPTING TO GRAB...");
-                draggableBox = box;
-                draggableBox.GrabBox(this);
-                break;
+                //Calculate the distance to the player
+                float distance = Vector2.Distance(transform.position, box.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closetBox = box;
+                }
             }
+        }
+
+        if (closetBox != null)
+        {
+            Debug.Log("BOX FOUND! ATTEMPTING TO GRAB..");
+            draggableBox = closetBox;
+            draggableBox.GrabBox(this);
         }
     }
 
