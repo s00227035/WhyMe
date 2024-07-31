@@ -25483,7 +25483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d522248825c5b3649ab6341edbb84042, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exitUIPanel: {fileID: 831326549}
+  exitUIManager: {fileID: 831326553}
 --- !u!1001 &1382210384
 PrefabInstance:
   m_ObjectHideFlags: 0

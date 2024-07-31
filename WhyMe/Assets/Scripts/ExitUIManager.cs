@@ -6,12 +6,32 @@ using UnityEngine.SceneManagement;
 public class ExitUIManager : MonoBehaviour
 {
     public GameObject exitUIPanel; //Reference to the UI panel
+    private Player player; //Reference to the player script
 
     private void Awake()
     {
         if (exitUIPanel != null)
         {
             exitUIPanel.SetActive(false); //Hide the panel on start
+        }
+    }
+
+    private void Start()
+    {
+        //Find and assign the Player instance
+        player = FindObjectOfType<Player>();
+    }
+
+    //Method to show the exit UI
+    public void ShowExitUI()
+    {
+        if (exitUIPanel != null)
+        {
+            exitUIPanel.SetActive(true); //Show the UI panel
+            if (player != null)
+            {
+                player.SetInputEnabled(false); //Disable player input
+            }
         }
     }
 

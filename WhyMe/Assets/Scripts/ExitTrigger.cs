@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class ExitTrigger : MonoBehaviour
 {
-    public GameObject exitUIPanel; //Reference to the UI panel
+    public ExitUIManager exitUIManager; //Reference to the UI manager
 
     private void Start()
     {
         //UI panel is hidden at the start
-        if (exitUIPanel != null)
+        if (exitUIManager != null)
         {
-            exitUIPanel.SetActive(false);
+            exitUIManager.exitUIPanel.SetActive(false);
         }
     }
 
@@ -20,9 +20,9 @@ public class ExitTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            if (exitUIPanel != null)
+            if (exitUIManager != null)
             {
-                exitUIPanel.SetActive(true); //Show the UI panel
+                exitUIManager.ShowExitUI(); //Show the exit UI
             }
         }
     }

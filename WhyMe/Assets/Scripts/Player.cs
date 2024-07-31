@@ -10,11 +10,18 @@ public class Player : Character
     private DraggableBox draggableBox = null;//Reference to the draggable box
     private const float interactionRange = 2f;//interaction range for grabbing boxes
     public bool IsMoving {  get; private set; }
+    private bool inputEnabled = true; //Enable/disable player input
 
     public override void Start()
     {
         animator = GetComponent<Animator>();
         base.Start();//call the Start method of Character
+    }
+
+    //method to enable/disable input
+    public void SetInputEnabled(bool enabled)
+    {
+        inputEnabled = enabled;
     }
 
     //Setting up animation based on bool
@@ -30,6 +37,11 @@ public class Player : Character
     //Movement + states
     private void Update()
     {
+        if (!inputEnabled)
+        {
+            return; //Exit early if input is disabled
+        }
+
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
 
@@ -56,6 +68,11 @@ public class Player : Character
 
     private void FixedUpdate()
     {
+        if (!inputEnabled)
+        {
+            return; //Exit early if input is disabled
+        }
+
         body.MovePosition(transform.position + new Vector3(horizontal, vertical, 0) * movementSpeed * Time.deltaTime);
     }
 
@@ -87,7 +104,7 @@ public class Player : Character
             else
             {
                 //Release the current box
-                Debug.Log("RELEASING BOX.");
+                //Debug.Log("RELEASING BOX.");
                 draggableBox.ReleaseBox();
                 draggableBox = null;
             }
@@ -100,7 +117,7 @@ public class Player : Character
         //Check for boxes within range
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, interactionRange);
 
-        Debug.Log($"Checking for boxes within range {interactionRange}..."); // Log range check
+        //Debug.Log($"Checking for boxes within range {interactionRange}..."); // Log range check
 
         DraggableBox closetBox = null;
         float closestDistance = float.MaxValue;
