@@ -43,7 +43,7 @@ public class DraggableBox : MonoBehaviour
     {
         if (!isLocked) //Only release if not locked
         {
-            Debug.Log("BOX RELEASED");
+            //Debug.Log("BOX RELEASED");
             isBeingDragged = false;
             player = null; //Clear the player reference
         }
@@ -87,7 +87,7 @@ public class DraggableBox : MonoBehaviour
             rigidBody.bodyType = RigidbodyType2D.Static; //Make the box static so it cannot be moved
             lockedPosition = position; //Set the locked position
             transform.position = lockedPosition; //Set the box to the exact position
-            Debug.Log("BOX IS NOW LOCKED IN POSITION");
+            //Debug.Log("BOX IS NOW LOCKED IN POSITION");
         }
     }
 
@@ -98,7 +98,7 @@ public class DraggableBox : MonoBehaviour
         {
             isLocked = false;
             rigidBody.bodyType = RigidbodyType2D.Kinematic; //Make the box movable again
-            Debug.Log("BOX IS NOW UNLOCKED");
+            //Debug.Log("BOX IS NOW UNLOCKED");
         }
     }
 }

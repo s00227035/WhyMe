@@ -6,11 +6,20 @@ public class BoxTargetArea : MonoBehaviour
 {
     public bool isOccupied { get; private set; } = false; //Whether the area is occupied by a box
     public string requiredBoxTag = "Box"; //Tag to identify boxes
-    private DraggableBox currentBox; // Keep track of the box currently occupying this area
+    private DraggableBox currentBox; //Keep track of the box currently occupying this area
+    private TargetAreaColor colorChange; //Reference to the color change script
     //Delay to ensure stability before marking the box as removed
     private const float unoccupiedDelay = 0.2f;
 
-
+    private void Start()
+    {
+        //Get the TargetAreaColor component
+        colorChange = GetComponent<TargetAreaColor>();
+        if (colorChange != null)
+        {
+            colorChange.SetUnoccupiedColor(); //Initialize color
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -18,13 +27,17 @@ public class BoxTargetArea : MonoBehaviour
         {
             //Mark this area as occupied if the correct box enters
             DraggableBox box = collision.GetComponent<DraggableBox>();
-            if (box != null && !box.isLocked) // Ensure the box is not already locked
+            if (box != null && !box.isLocked) //Ensure the box is not already locked
             {
                 isOccupied = true;
                 currentBox = box;
-                currentBox.LockPosition(transform.position); // Lock the box in position
-                isOccupied = true;
-                Debug.Log($"Box placed correctly in target area: {gameObject.name}");
+                currentBox.LockPosition(transform.position); //Lock the box in position
+                                                             //Debug.Log($"Box placed correctly in target area: {gameObject.name}");
+
+                if (colorChange != null)
+                {
+                    colorChange.SetOccupiedColor(); //Change color
+                }
             }
         }
     }
@@ -54,7 +67,12 @@ public class BoxTargetArea : MonoBehaviour
             box.Unlock(); // Unlock the box when it leaves the area
             currentBox = null;
             isOccupied = false;
-            Debug.Log($"Box removed from target area: {gameObject.name}");
+            //Debug.Log($"Box removed from target area: {gameObject.name}");
+
+            if (colorChange != null)
+            {
+                colorChange.SetUnoccupiedColor(); //Revert color to unoccupied
+            }
         }
     }
 

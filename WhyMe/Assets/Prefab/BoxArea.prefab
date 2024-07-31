@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3172679870860876347}
   - component: {fileID: 6179885958340090413}
   - component: {fileID: 8332277320144150110}
+  - component: {fileID: -3364413465552823870}
   m_Layer: 0
   m_Name: BoxArea
   m_TagString: Untagged
@@ -98,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c05655d9fb6e87b43a638b53542d04b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requredBoxTag: Box
+  requiredBoxTag: Box
 --- !u!61 &8332277320144150110
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -144,3 +145,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-3364413465552823870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7699345543847109273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61f4a685ec738b843b98279dfc18a904, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  occupiedColor: {r: 0.0032253, g: 0.5698112, b: 0.0032253, a: 1}
+  unoccupiedColor: {r: 0.83396226, g: 0.036190722, b: 0.036190722, a: 1}
