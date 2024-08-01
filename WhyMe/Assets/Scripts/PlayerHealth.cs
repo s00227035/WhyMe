@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -13,22 +14,47 @@ public class PlayerHealth : MonoBehaviour
 
     private Coroutine regenCoroutine;
 
+    [SerializeField]
+    private GameObject playerDeathCanvas;
+
+    private Player player; //Reference to the plaer
+    private bool isDead = false; //Check if the player is dead
+
+
     void Start()
     {
         currentHealth = maxHealth;
         //Debug.Log("Starting health: " + currentHealth); // Log initial health
         UpdateHealthBar();
         regenCoroutine = StartCoroutine(RegenerateHealth());
+
+        //Find Player component
+        player = GetComponent<Player>();
+        //Ensure PlayerDeathCanvas is assigned
+        if (playerDeathCanvas == null)
+        {
+            Debug.LogError("PlayerDeathCanvas is not assigned in the inspector");
+        }
+        else
+        {
+            playerDeathCanvas.SetActive(false); //Ensure it's inactive at start
+        }
     }
 
     public void TakeDamage(int amount)
     {
+        if (isDead)
+        {
+            return; //No damage if player is dead
+        }
+
         currentHealth -= amount;
         //Debug.Log($"Taking damage: {amount}, Current Health: {currentHealth}"); // Log for damage
 
-        if (currentHealth < 0)
+        if (currentHealth <= 0)
         {
             currentHealth = 0;
+            PlayerDeath();
         }
 
         UpdateHealthBar();
@@ -36,6 +62,11 @@ public class PlayerHealth : MonoBehaviour
 
     public void Heal(int amount)
     {
+        if (isDead)
+        {
+            return; //No healing if player is dead
+        }
+
         currentHealth += amount;
         //Debug.Log($"Healing: {amount}, Current Health: {currentHealth}"); // Log for healing
 
@@ -71,5 +102,48 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(regenTickTime);
             //Debug.Log("Regenerating health, current health: " + currentHealth); // Debug log for health regeneration
         }
+    }
+
+    //Player's death
+    private void PlayerDeath()
+    {
+        Debug.Log("Player died");
+
+        isDead = true;
+
+        //Disable player input
+        if (player != null)
+        {
+            player.SetInputEnabled(false);
+        }
+
+        //Show death UI
+        if (playerDeathCanvas != null)
+        {
+            playerDeathCanvas.SetActive(true);
+        }
+
+        //Stop health regen
+        if (regenCoroutine != null)
+        {
+            StopCoroutine(regenCoroutine);
+        }
+
+        //Stop time
+        Time.timeScale = 0f;
+    }
+
+    //Restart the game
+    public void RestartGame()
+    {
+        Time.timeScale = 1f; //Resume time
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    //Return to MainMenu
+    public void GoToMainMenu()
+    {
+        Time.timeScale = 1f; //Resume time
+        SceneManager.LoadScene("MainMenu"); //Load main menu
     }
 }
