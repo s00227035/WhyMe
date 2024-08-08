@@ -259,6 +259,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 142782231}
     m_Modifications:
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Size.x
+      value: 1.1648381
+      objectReference: {fileID: 0}
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Size.y
+      value: 1.0247533
+      objectReference: {fileID: 0}
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.00653255
+      objectReference: {fileID: 0}
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.041780934
+      objectReference: {fileID: 0}
     - target: {fileID: 1518762552918485657, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
       propertyPath: m_Name
       value: printer
@@ -4507,6 +4523,7 @@ GameObject:
   - component: {fileID: 258220979}
   - component: {fileID: 258220978}
   - component: {fileID: 258220982}
+  - component: {fileID: 258220983}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4601,6 +4618,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 1647336224}
+--- !u!114 &258220983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258220977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!1001 &260604340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10895,6 +10956,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 142782231}
     m_Modifications:
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Size.x
+      value: 1.1689873
+      objectReference: {fileID: 0}
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Size.y
+      value: 0.9869337
+      objectReference: {fileID: 0}
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.0000009536743
+      objectReference: {fileID: 0}
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.024826288
+      objectReference: {fileID: 0}
     - target: {fileID: 1518762552918485657, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
       propertyPath: m_Name
       value: printer (1)
@@ -18457,6 +18534,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 142782231}
     m_Modifications:
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Size.x
+      value: 1.1027851
+      objectReference: {fileID: 0}
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Size.y
+      value: 0.9703822
+      objectReference: {fileID: 0}
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.016551971
+      objectReference: {fileID: 0}
+    - target: {fileID: -1574214711332248497, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.016549826
+      objectReference: {fileID: 0}
     - target: {fileID: 1518762552918485657, guid: 36146294e89b5da4f93f00d235010adb, type: 3}
       propertyPath: m_Name
       value: printer
