@@ -6,10 +6,10 @@ public class Player : Character
 {
 
     private float horizontal, vertical;//input horizontal and vertical
-    Vector3 mouseWorldPosition;
+    private Vector3 mouseWorldPosition;
     private DraggableBox draggableBox = null;//Reference to the draggable box
     private const float interactionRange = 2f;//interaction range for grabbing boxes
-    public bool IsMoving {  get; private set; }
+    public bool IsMoving { get; private set; }
     private bool inputEnabled = true; //Enable/disable player input
 
     public override void Start()
@@ -48,13 +48,17 @@ public class Player : Character
         mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPosition.z = 0;
 
-        transform.up = mouseWorldPosition - transform.position;
+        //OLD
+        //transform.up = mouseWorldPosition - transform.position;
+
+        //NEW
+        //Rotate player to face the mouse position
+        RotateTowardsMouse();
 
         if (horizontal != 0 || vertical != 0)
         {
             SetState(CharacterState.Run);
-            //Update sprite direction
-            UpdateSpriteDirection(horizontal, vertical);
+            //UpdateSpriteDirection(horizontal, vertical);
         }
         else
         {
@@ -73,9 +77,28 @@ public class Player : Character
             return; //Exit early if input is disabled
         }
 
-        body.MovePosition(transform.position + new Vector3(horizontal, vertical, 0) * movementSpeed * Time.deltaTime);
+        //Move the player
+        Vector3 moveDirection = new Vector3(horizontal, vertical, 0).normalized;
+        body.MovePosition(transform.position + moveDirection * movementSpeed * Time.deltaTime);
     }
 
+    //NEW
+    //Rotate the player towards the mouse position
+    private void RotateTowardsMouse()
+    {
+        // Calculate the direction to look towards the mouse
+        Vector3 lookDirection = mouseWorldPosition - transform.position;
+
+        // Get the angle in radians and convert it to degrees
+        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg - 90f;
+
+        // Create the target rotation and apply it
+        Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        transform.rotation = targetRotation;
+    }
+
+
+    /*OLD
     private void UpdateSpriteDirection(float horizontal, float vertical)
     {
         //Determine direction based on input
@@ -91,6 +114,7 @@ public class Player : Character
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
     }
+    */
 
     //Handle interaction with boxes
     private void HandleBoxInteraction()

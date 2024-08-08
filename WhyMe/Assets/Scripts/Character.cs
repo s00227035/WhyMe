@@ -19,7 +19,7 @@ public class Character : MonoBehaviour
     protected Rigidbody2D body;
     public Animator animator;//Used for both enemy and player
 
-    SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
 
     public virtual void Start()
     {
