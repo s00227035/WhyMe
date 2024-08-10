@@ -49,16 +49,16 @@ public class Player : Character
         mouseWorldPosition.z = 0;
 
         //OLD
-        //transform.up = mouseWorldPosition - transform.position;
+        transform.up = mouseWorldPosition - transform.position;
 
         //NEW
         //Rotate player to face the mouse position
-        RotateTowardsMouse();
+        //RotateTowardsMouse();
 
         if (horizontal != 0 || vertical != 0)
         {
             SetState(CharacterState.Run);
-            //UpdateSpriteDirection(horizontal, vertical);
+            UpdateSpriteDirection(horizontal, vertical);
         }
         else
         {
@@ -82,6 +82,7 @@ public class Player : Character
         body.MovePosition(transform.position + moveDirection * movementSpeed * Time.deltaTime);
     }
 
+    /*
     //NEW
     //Rotate the player towards the mouse position
     private void RotateTowardsMouse()
@@ -96,9 +97,9 @@ public class Player : Character
         Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle));
         transform.rotation = targetRotation;
     }
+    */
 
-
-    /*OLD
+    //OLD
     private void UpdateSpriteDirection(float horizontal, float vertical)
     {
         //Determine direction based on input
@@ -114,7 +115,7 @@ public class Player : Character
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
     }
-    */
+    
 
     //Handle interaction with boxes
     private void HandleBoxInteraction()
