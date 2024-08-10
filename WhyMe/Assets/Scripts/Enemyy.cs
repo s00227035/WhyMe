@@ -40,6 +40,9 @@ public class Enemyy : Character
                 AttackPlayer();
                 attackTimer = attackCooldown; // Reset the attack timer
                 slowedTimer = slowedCooldown; // Start slowed timer after attack
+
+                //Apply the slowed speed
+                aiPath.maxSpeed = slowedMovementSpeed;
             }
             else
             {
