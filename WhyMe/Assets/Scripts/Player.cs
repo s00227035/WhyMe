@@ -11,11 +11,17 @@ public class Player : Character
     private const float interactionRange = 2f;//interaction range for grabbing boxes
     public bool IsMoving { get; private set; }
     private bool inputEnabled = true; //Enable/disable player input
+    private Collider2D playerCollider; //Reference to the player collider
 
     public override void Start()
     {
         animator = GetComponent<Animator>();
         base.Start();//call the Start method of Character
+
+        if (playerCollider == null)
+        {
+            playerCollider = GetComponent<Collider2D>(); //Initialize player collider
+        }
     }
 
     //method to enable/disable input
@@ -51,7 +57,7 @@ public class Player : Character
         //OLD
         transform.up = mouseWorldPosition - transform.position;
 
-        //NEW
+        //NEW differnt version for 360 angle
         //Rotate player to face the mouse position
         //RotateTowardsMouse();
 
@@ -82,7 +88,7 @@ public class Player : Character
         body.MovePosition(transform.position + moveDirection * movementSpeed * Time.deltaTime);
     }
 
-    /*
+    /* 360 ANGLE ROTATION
     //NEW
     //Rotate the player towards the mouse position
     private void RotateTowardsMouse()
@@ -130,8 +136,8 @@ public class Player : Character
             {
                 //Release the current box
                 //Debug.Log("RELEASING BOX.");
-                draggableBox.ReleaseBox();
-                draggableBox = null;
+                ReleaseBox();
+                
             }
         }
     }
@@ -167,8 +173,24 @@ public class Player : Character
             //Debug.Log("BOX FOUND! ATTEMPTING TO GRAB..");
             draggableBox = closetBox;
             draggableBox.GrabBox(this);
+
+            //Disable collision between player and box
+            Physics2D.IgnoreCollision(playerCollider, draggableBox.GetComponent<Collider2D>(), true);
         }
     }
+
+    //ReleaseBox again
+    private void ReleaseBox()
+    {
+        if (draggableBox != null)
+        {
+            //Re-enable collision between player and box
+            Physics2D.IgnoreCollision(playerCollider,draggableBox.GetComponent<Collider2D>(), false);
+            draggableBox.ReleaseBox();
+            draggableBox=null;
+        }
+    }
+
 
     //Visualize the range for interaction
     private void OnDrawGizmosSelected()
