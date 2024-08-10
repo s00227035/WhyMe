@@ -40980,6 +40980,10 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5693393492673340680, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 8337707309367239375, guid: 3da22e65bdc8f3747bf86fd919af4dc1, type: 3}
       propertyPath: radius
       value: 5
