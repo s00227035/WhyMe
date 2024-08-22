@@ -39,6 +39,8 @@ public class ExitUIManager : MonoBehaviour
             {
                 player.SetInputEnabled(false); //Disable player input
             }
+
+            Time.timeScale = 0f; //Stop time
         }
     }
 
@@ -46,13 +48,16 @@ public class ExitUIManager : MonoBehaviour
     public void OnMainMenuButtonClicked()
     {
         PlayClickSound();
+        Time.timeScale = 1f; //Resume time
         SceneManager.LoadScene("MainMenu");
+
     }
 
     //handle restart button
     public void OnRestartButtonClicked()
     {
         PlayClickSound();
+        Time.timeScale = 1f; //Resume time
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); //Reload the current scene
     }
 
@@ -60,6 +65,7 @@ public class ExitUIManager : MonoBehaviour
     public void OnQuitButtonClick()
     {
         PlayClickSound();
+        Time.timeScale = 1f; //Resume time
         Application.Quit(); //Quit the app
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false; //Stop play mode in Unity Editor
