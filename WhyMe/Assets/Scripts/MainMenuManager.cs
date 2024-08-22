@@ -15,26 +15,26 @@ public class MainMenuManager : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
 
-        //Ensure that audioSource is initialized
+        //AudioSource is initialized
         if (audioSource == null)
         {
             Debug.LogError("AudioSource component missing on MainMenuManager GameObject!");
         }
 
-        //Ensure that Play On Awake is disabled
+        //Play On Awake is disabled
         audioSource.playOnAwake = false;
     }
 
     public void OnPlayButtonClicked()
     {
-        Debug.Log("Play button clicked");
+        //Debug.Log("Play button clicked");
         PlayClickSound();
         SceneManager.LoadScene("TestMap"); //Load the game map
     }
 
     public void OnQuitButtonClicked()
     {
-        Debug.Log("Quit button clicked");
+        //Debug.Log("Quit button clicked");
         PlayClickSound();
         Application.Quit(); //Quit the app
         #if UNITY_EDITOR
@@ -44,7 +44,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void OnButtonHover()
     {
-        Debug.Log("Button hovered");
+        //Debug.Log("Button hovered");
         PlayHoverSound();
     }
 
@@ -52,7 +52,7 @@ public class MainMenuManager : MonoBehaviour
     {
         if (hoverSound != null && audioSource != null)
         {
-            Debug.Log("Playing hover sound");
+            //Debug.Log("Playing hover sound");
             audioSource.PlayOneShot(hoverSound);
         }
         else
@@ -65,7 +65,7 @@ public class MainMenuManager : MonoBehaviour
     {
         if (clickSound != null && audioSource != null)
         {
-            Debug.Log("Playing click sound");
+            //Debug.Log("Playing click sound");
             audioSource.PlayOneShot(clickSound);
         }
         else
