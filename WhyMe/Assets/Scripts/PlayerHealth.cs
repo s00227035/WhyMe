@@ -20,6 +20,11 @@ public class PlayerHealth : MonoBehaviour
     private Player player; //Reference to the plaer
     private bool isDead = false; //Check if the player is dead
 
+    //AUDIO
+    private AudioSource audioSource;
+    public AudioClip hoverSound;
+    public AudioClip clickSound;
+
 
     void Start()
     {
@@ -30,6 +35,7 @@ public class PlayerHealth : MonoBehaviour
 
         //Find Player component
         player = GetComponent<Player>();
+
         //Ensure PlayerDeathCanvas is assigned
         if (playerDeathCanvas == null)
         {
@@ -39,6 +45,9 @@ public class PlayerHealth : MonoBehaviour
         {
             playerDeathCanvas.SetActive(false); //Ensure it's inactive at start
         }
+
+        //AudioSource component
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void TakeDamage(int amount)
@@ -136,6 +145,7 @@ public class PlayerHealth : MonoBehaviour
     //Restart the game
     public void RestartGame()
     {
+        PlayClickSound(); //Click sound
         Time.timeScale = 1f; //Resume time
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
@@ -143,7 +153,30 @@ public class PlayerHealth : MonoBehaviour
     //Return to MainMenu
     public void GoToMainMenu()
     {
+        PlayClickSound(); //Click sound
         Time.timeScale = 1f; //Resume time
         SceneManager.LoadScene("MainMenu"); //Load main menu
+    }
+
+    //Hover method
+    public void OnButtonHover()
+    {
+        PlayHoverSound();
+    }
+
+    private void PlayHoverSound()
+    {
+        if (hoverSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(hoverSound); //Play hover sound
+        }
+    }
+
+    private void PlayClickSound()
+    {
+        if (clickSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(clickSound); //Play click sound
+        }
     }
 }
