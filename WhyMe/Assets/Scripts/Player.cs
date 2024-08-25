@@ -12,6 +12,9 @@ public class Player : Character
     public bool IsMoving { get; private set; }
     private bool inputEnabled = true; //Enable/disable player input
     private Collider2D playerCollider; //Reference to the player collider
+    //Audio
+    private AudioSource audioSource;
+    public AudioClip walkingSound;
 
     public override void Start()
     {
@@ -21,6 +24,16 @@ public class Player : Character
         if (playerCollider == null)
         {
             playerCollider = GetComponent<Collider2D>(); //Initialize player collider
+        }
+
+        //Initialize audio source
+        audioSource = GetComponent<AudioSource>();
+
+        //Loop the walking sound
+        if (audioSource != null && walkingSound != null)
+        {
+            audioSource.clip = walkingSound;
+            audioSource.loop = true; //Looping
         }
     }
 
@@ -36,10 +49,18 @@ public class Player : Character
         bool isMoving = horizontal != 0 || vertical != 0;
         animator.SetBool("IsMoving", isMoving);
         IsMoving = isMoving;//Set the movement state
+
+        //Walking sound
+        if (isMoving && !audioSource.isPlaying)
+        {
+            audioSource.Play(); //Sound if moving
+        }
+        else if (!isMoving && audioSource.isPlaying)
+        {
+            audioSource.Stop(); //No sound if Idle
+        }
     }
  
-
-
     //Movement + states
     private void Update()
     {

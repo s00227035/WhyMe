@@ -22,9 +22,10 @@ public class PlayerHealth : MonoBehaviour
 
     //AUDIO
     private AudioSource audioSource;
+    private AudioSource damageAudioSource; //Second audio for not intefering with walking
     public AudioClip hoverSound;
     public AudioClip clickSound;
-
+    public AudioClip damageSound; //Player takes damage sound
 
     void Start()
     {
@@ -48,6 +49,8 @@ public class PlayerHealth : MonoBehaviour
 
         //AudioSource component
         audioSource = GetComponent<AudioSource>();
+
+        damageAudioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public void TakeDamage(int amount)
@@ -59,6 +62,9 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= amount;
         //Debug.Log($"Taking damage: {amount}, Current Health: {currentHealth}"); // Log for damage
+
+        //Damage Sound
+        PlayDamageSound();
 
         if (currentHealth <= 0)
         {
@@ -177,6 +183,14 @@ public class PlayerHealth : MonoBehaviour
         if (clickSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(clickSound); //Play click sound
+        }
+    }
+
+    private void PlayDamageSound()
+    {
+        if (damageSound != null && damageAudioSource != null)
+        {
+            damageAudioSource.PlayOneShot(damageSound); //Play damage sound
         }
     }
 }
