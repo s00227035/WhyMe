@@ -8,6 +8,16 @@ public class Door : MonoBehaviour
 
     private bool isOpen = false; //Keep track of whether the door is already open
 
+    //Audio
+    private AudioSource audioSource;
+    public AudioClip doorOpenedSound;
+
+    private void Start()
+    {
+        //AudioSource component
+        audioSource = GetComponent<AudioSource>();
+    }
+
     private void Update()
     {
         if (!isOpen && AreAllBoxesPlaced())
@@ -33,8 +43,24 @@ public class Door : MonoBehaviour
     //Open the door
     private void OpenDoor()
     {
-        Debug.Log("DOOR OPENED!");
+        //Debug.Log("DOOR OPENED!");
         isOpen = true;
+
+        if (audioSource != null && doorOpenedSound != null)
+        {
+            audioSource.PlayOneShot(doorOpenedSound);
+        }
+
+        //Delay destroying the door until audio is finished
+        StartCoroutine(DestroyAfterSound());
+    }
+
+    private IEnumerator DestroyAfterSound()
+    {
+        if (doorOpenedSound != null)
+        {
+            yield return new WaitForSeconds(doorOpenedSound.length);
+        }
         Destroy(gameObject); //Destroy the door
     }
 }
