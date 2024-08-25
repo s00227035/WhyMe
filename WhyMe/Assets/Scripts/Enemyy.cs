@@ -13,10 +13,15 @@ public class Enemyy : Character
     public float attackCooldown = 2f; // Cooldown between attacks
     public float slowedCooldown = 7f; // Time to remain slowed after attack
     
-
     private GameObject player;
     private float attackTimer; // Timer for attack cooldown
     private float slowedTimer; // Timer for slowed state
+    //Audio
+    private AudioSource runAudioSource; //Walk sound
+    private AudioSource attackAudioSource; //Attack soind
+    public AudioClip attackSound;
+    public AudioClip runSound;
+    public float soundTriggerRange = 20f; //Range for the enemy run sound
 
     public override void Start()
     {
@@ -27,6 +32,11 @@ public class Enemyy : Character
         base.Start();
         slowedTimer = 0f; // Start with no slowdown
         attackTimer = attackCooldown; // Initialize the attack timer
+
+        //Initialize AudioSOurce componenet
+        AudioSource[] audioSources = GetComponents<AudioSource>(); 
+        runAudioSource = audioSources[0];
+        attackAudioSource = audioSources[1];
     }
 
     void Update()
@@ -71,7 +81,14 @@ public class Enemyy : Character
         }
         //Debug.Log("distance to player: " + distanceToPlayer);
 
-        
+        if (distanceToPlayer <= soundTriggerRange)
+        {
+            PlayRunSound(); //Walk sound when moving
+        }
+        else
+        {
+            runAudioSource.Stop(); //Stop if the enemy is far
+        }
 
         SetAnimation();
     }
@@ -87,8 +104,34 @@ public class Enemyy : Character
         if (playerHealth != null)
         {
             playerHealth.TakeDamage(damage);
+            PlayAttackSound(); //Attak sound when attacking
         }
         slowedTimer = slowedCooldown; // Reset the slowed timer after every attack
+    }
+
+    private void PlayAttackSound()
+    {
+        if (attackSound != null && attackAudioSource != null)
+        {
+            attackAudioSource.PlayOneShot(attackSound);
+        }
+    }
+
+    private void PlayRunSound()
+    {
+        if (runSound != null && runAudioSource != null && aiPath.velocity.sqrMagnitude > 0.1f)
+        {
+            if (!runAudioSource.isPlaying) //check is run sound is alrdy playing
+            {
+                runAudioSource.clip = runSound;
+                runAudioSource.loop = true; //Looping
+                runAudioSource.Play(); //Start plaing run sound
+            }
+        }
+        else if (aiPath.velocity.sqrMagnitude <= 0.1f && runAudioSource.isPlaying)
+        {
+            runAudioSource.Stop(); //Stop the run sound when the enemy stops moving
+        }
     }
 
     private void OnDrawGizmos()

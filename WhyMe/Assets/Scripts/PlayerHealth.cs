@@ -10,7 +10,7 @@ public class PlayerHealth : MonoBehaviour
 
     public Image foregroundImage; // Assign this in the Unity Editor
     public int regenAmount = 10; // Amount of health to regenerate each tick
-    public float regenTickTime = 4f; // Time between each regeneration tick
+    public float regenTickTime = 3f; // Time between each regeneration tick
 
     private Coroutine regenCoroutine;
 
@@ -63,8 +63,8 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= amount;
         //Debug.Log($"Taking damage: {amount}, Current Health: {currentHealth}"); // Log for damage
 
-        //Damage Sound
-        PlayDamageSound();
+        //Delay the damage sound by 1.3 seconds
+        StartCoroutine(PlayDelayedDamageSound(1.3f));
 
         if (currentHealth <= 0)
         {
@@ -186,8 +186,10 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private void PlayDamageSound()
+    private IEnumerator PlayDelayedDamageSound(float delay)
     {
+        yield return new WaitForSeconds(delay); //Wait for the daley
+
         if (damageSound != null && damageAudioSource != null)
         {
             damageAudioSource.PlayOneShot(damageSound); //Play damage sound
