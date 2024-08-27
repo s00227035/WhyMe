@@ -6,7 +6,7 @@ using Pathfinding;
 public class Enemyy : Character
 {
     public AIPath aiPath; // Reference to the AIPath component
-    public int damage = 40;
+    public int damage = 30;
     public float attackRange = 5f;
     public float sprintMovementSpeed = 10f; // sprint speed
     public float slowedMovementSpeed = 2f; // slowed speed
@@ -23,6 +23,10 @@ public class Enemyy : Character
     public AudioClip runSound;
     public float soundTriggerRange = 20f; //Range for the enemy run sound
 
+    //UI Dialogue pop up text
+    private EnemyDialogue enemyDialogue;
+    private string[] attackMessages = { "Got you!", "I'll kill you", "You'll die!" };
+
     public override void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -37,6 +41,9 @@ public class Enemyy : Character
         AudioSource[] audioSources = GetComponents<AudioSource>(); 
         runAudioSource = audioSources[0];
         attackAudioSource = audioSources[1];
+
+        //Get Dialogue component
+        enemyDialogue = GetComponentInChildren<EnemyDialogue>();
     }
 
     void Update()
@@ -47,6 +54,13 @@ public class Enemyy : Character
         {
             if (attackTimer <= 0f)
             {
+                //UI dialogue enemy
+                if (enemyDialogue != null)
+                {
+                    string randomMessage = attackMessages[Random.Range(0, attackMessages.Length)];
+                    enemyDialogue.ShowDialogue(randomMessage);
+                }
+
                 AttackPlayer();
                 attackTimer = attackCooldown; // Reset the attack timer
                 slowedTimer = slowedCooldown; // Start slowed timer after attack
