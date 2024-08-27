@@ -50,6 +50,26 @@ public class Enemyy : Character
     {
         float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
 
+        // Detect nearby box
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, player.transform.position - transform.position, attackRange, LayerMask.GetMask("Box"));
+        if (hit.collider != null)
+        {
+            //If box detected in path, push it
+            BoxInteraction(hit.collider.gameObject);
+        }
+        else
+        {
+            //Usual chase and attack
+            MovementAndAttack(distanceToPlayer);
+        }
+        
+        SetAnimation();
+    }
+
+    private void MovementAndAttack(float distanceToPlayer)
+    {
+
+    
         if (distanceToPlayer < attackRange)
         {
             if (attackTimer <= 0f)
@@ -104,7 +124,17 @@ public class Enemyy : Character
             runAudioSource.Stop(); //Stop if the enemy is far
         }
 
-        SetAnimation();
+    }
+    private void BoxInteraction(GameObject box)
+    {
+        DraggableBox draggableBox = box.GetComponent<DraggableBox>();
+        if (draggableBox != null)
+        {
+            //Push the box
+            Vector2 pushDirection = (box.transform.position - transform.position).normalized;
+            box.transform.position += (Vector3)(pushDirection * 0.4f); //Push amount
+            
+        }
     }
 
     private void SetAnimation()

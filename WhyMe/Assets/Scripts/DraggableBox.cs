@@ -66,7 +66,6 @@ public class DraggableBox : MonoBehaviour
         }
     }
 
-    //Lock the box in place
     private void FollowPlayer()
     {
         //Calculate the new position of the box relative to the player
@@ -77,6 +76,7 @@ public class DraggableBox : MonoBehaviour
         rigidBody.MovePosition(Vector3.Lerp(transform.position, targetPosition, 10f * Time.deltaTime));
     }
 
+    //Lock the box in place
     public void LockPosition(Vector3 position)
     {
         if (!isLocked)
@@ -91,7 +91,7 @@ public class DraggableBox : MonoBehaviour
         }
     }
 
-    // Unlock the box(optional functionality)
+    //Unlock the box
     public void Unlock()
     {
         if (isLocked)
@@ -99,6 +99,20 @@ public class DraggableBox : MonoBehaviour
             isLocked = false;
             rigidBody.bodyType = RigidbodyType2D.Kinematic; //Make the box movable again
             //Debug.Log("BOX IS NOW UNLOCKED");
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy") && !isLocked)
+        {
+            //Interaction with enemy -> allow pushing
+            Rigidbody2D boxRigidbody = GetComponent<Rigidbody2D>();
+            if (boxRigidbody != null)
+            {
+                Vector2 pushDirection = collision.relativeVelocity.normalized;
+                boxRigidbody.AddForce(pushDirection * 500f); // Adjust force based on enemy collision strength
+            }
         }
     }
 }
