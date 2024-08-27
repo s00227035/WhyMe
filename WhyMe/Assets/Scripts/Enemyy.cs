@@ -6,12 +6,12 @@ using Pathfinding;
 public class Enemyy : Character
 {
     public AIPath aiPath; // Reference to the AIPath component
-    public int damage = 30;
+    public int damage = 40;
     public float attackRange = 5f;
     public float sprintMovementSpeed = 10f; // sprint speed
     public float slowedMovementSpeed = 2f; // slowed speed
     public float attackCooldown = 2f; // Cooldown between attacks
-    public float slowedCooldown = 7f; // Time to remain slowed after attack
+    public float slowedCooldown = 4f; // Time to remain slowed after attack
     
     private GameObject player;
     private float attackTimer; // Timer for attack cooldown
@@ -177,7 +177,7 @@ public class Enemyy : Character
             runAudioSource.Stop(); //Stop the run sound when the enemy stops moving
         }
     }
-
+    
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
